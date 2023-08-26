@@ -117,19 +117,6 @@ class SearchTree:
     def __str__(self):
         return f"{self.data}"
 
-
-# # Create nodes
-# root = SearchTree("Root")
-# child1 = SearchTree("Child 1")
-# child2 = SearchTree("Child 2")
-# child3 = SearchTree("Child 3")
-# root.add_child(child1)
-# root.add_child(child2)
-# child1.add_child(child3)
-
-# # Perform breadth-first traversal and print the result
-# result = root.breadth_first_traversal()
-# print(result)
 game = Game()
 searchTreeResult = SearchTree.searchState2()
 
