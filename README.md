@@ -5,8 +5,8 @@ The Cannibals and Missionaries State Space Visualizer is a tool created to visua
 ## Dependencies
 This project uses [Poetry](https://python-poetry.org/) for dependency management. 
 
-graphviz
-pydot
+graphviz\
+pydot\
 graphvizanim = { git = "https://github.com/javaclll/GraphvizAnim.git" }
 
 Please use the provided fork for the graphvizaim lib as provided above.
