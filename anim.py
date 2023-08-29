@@ -53,6 +53,7 @@ if __name__=="__main__":
 
     print(len(datapoints))
     graphAnimation.add_node(str(searching.root.data))
+    graphAnimation.highlight_node(str(searching.root.data), color="lightblue")
     graphAnimation.next_step()
 
     for vertex, adjacents in datapoints.items():
