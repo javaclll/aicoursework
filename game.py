@@ -1,5 +1,4 @@
 from enum import Enum
-from collections import deque
 
 
 class GameState(Enum):
@@ -123,17 +122,3 @@ class Game:
 
     def __str__(self):
         return f"({self.gameState.missionaries}, {self.gameState.cannibals}, { 0 if(self.gameState.cannoe) else 1})"
-
-
-if __name__ == "__main__":
-    newGame = Game()
-    actions = [
-        ActionSpace.TwoCannibals,
-        ActionSpace.Cannibal,
-        ActionSpace.Cannibal,
-    ]
-    for action in actions:
-        newGame.move(action)
-
-    goalState = State(0, 0, False)
-    print(newGame.gameStatus)

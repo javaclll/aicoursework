@@ -1,54 +1,17 @@
-from collections import deque
-from game import GameState, State, Action, ActionSpace, Game
+from game import GameState, ActionSpace, Game
 import copy
 
 
-class SearchTree:
-    def __init__(self, nodeState: Game):
-        self.data = nodeState
+class Node:
+    def __init__(self, state: Game):
+        self.data = state
+        self.parent = []
         self.children = []
-        self.terminate = False
-        self.parent = None
-
-    def add_child(self, child_node):
-        self.children.append(child_node)
-
-    def get_all_states(self):
-        stateList = []
-
-        temp_game = copy.deepcopy(self.data)
-        can_move = temp_game.move(ActionSpace.Missionary)
-        if can_move:
-            temp_node = SearchTree(temp_game)
-            stateList.append(temp_node)
-
-        temp_game = copy.deepcopy(self.data)
-        can_move = temp_game.move(ActionSpace.Cannibal)
-        if can_move:
-            temp_node = SearchTree(temp_game)
-            stateList.append(temp_node)
-
-        temp_game = copy.deepcopy(self.data)
-        can_move = temp_game.move(ActionSpace.TwoMissionaries)
-        if can_move:
-            temp_node = SearchTree(temp_game)
-            stateList.append(temp_node)
-
-        temp_game = copy.deepcopy(self.data)
-        can_move = temp_game.move(ActionSpace.TwoCannibals)
-        if can_move:
-            temp_node = SearchTree(temp_game)
-            stateList.append(temp_node)
-
-        temp_game = copy.deepcopy(self.data)
-        can_move = temp_game.move(ActionSpace.MissionaryCannibal)
-        if can_move:
-            temp_node = SearchTree(temp_game)
-            stateList.append(temp_node)
-        return stateList
+        self.terminated = False
+        self.goal = False
 
     def __eq__(self, other):
-        if isinstance(other, SearchTree):
+        if isinstance(other, Node):
             if (
                 self.data.gameState.missionaries == other.data.gameState.missionaries
                 and self.data.gameState.cannibals == other.data.gameState.cannibals
@@ -60,67 +23,111 @@ class SearchTree:
 
         return False
 
-    def searchState():
-        queue = []
-        visited = []
-        newGame = Game()
-        initialNode = SearchTree(newGame)
-        children = initialNode.get_all_states()
-        queue.extend(children)
-        visited.append(initialNode)
-        for child in children:
-            initialNode.add_child(child)
-
-        while queue:
-            current_state = queue.pop(0)
-            if current_state in visited:
-                continue
-            visited.append(current_state)
-            if current_state.data.gameStatus == GameState.Won:
-                # print(f"Success: {current_state.data}")
-                break
-            if current_state.data.gameStatus == GameState.Running:
-                new_states = current_state.get_all_states()
-                for new_state in new_states:
-                    if new_state not in visited:
-                        queue.append(new_state)
-
-    def searchState2():
-        queue = []
-        visited = []
-        newGame = Game()
-        initialNode = SearchTree(newGame)
-        queue.append(initialNode)
-        while queue:
-            current_state = queue.pop(0)
-            if current_state in visited:
-                continue
-            visited.append(current_state)
-            if current_state.data.gameStatus == GameState.Won:
-                # print(f"Success: {current_state.data}")
-                return current_state
-
-            if current_state.data.gameStatus == GameState.Running:
-                new_states = current_state.get_all_states()
-                for new_state in new_states:
-                    current_state.add_child(new_state)
-                    new_state.parent = current_state
-                    if new_state not in visited:
-                        queue.append(new_state)
-
-    # def __repr__(self, level=0):
-    #     ret = "\t" * level + repr(self.data) + "\n"
-    #     for child in self.children:
-    #         ret += child.__repr__(level + 1)
-    #     return ret
-
     def __str__(self):
-        return f"{self.data}"
+        return f"Node: {self.data}, Goal: {self.goal}, Terminated: {self.terminated}"
 
-game = Game()
-searchTreeResult = SearchTree.searchState2()
+    def add_child(self, child_node):
+        self.children.append(child_node)
 
-temp = searchTreeResult
-while temp != None:
-    print(temp)
-    temp = temp.parent
+    def get_all_children(self):
+        child_list = []
+
+        game = copy.deepcopy(self.data)
+        can_move = game.move(ActionSpace.Missionary)
+
+        if can_move:
+            node = Node(game)
+            child_list.append(node)
+
+        game = copy.deepcopy(self.data)
+        can_move = game.move(ActionSpace.Cannibal)
+
+        if can_move:
+            node = Node(game)
+            child_list.append(node)
+
+        game = copy.deepcopy(self.data)
+        can_move = game.move(ActionSpace.TwoMissionaries)
+
+        if can_move:
+            node = Node(game)
+            child_list.append(node)
+
+        game = copy.deepcopy(self.data)
+        can_move = game.move(ActionSpace.TwoCannibals)
+
+        if can_move:
+            node = Node(game)
+            child_list.append(node)
+
+        game = copy.deepcopy(self.data)
+        can_move = game.move(ActionSpace.MissionaryCannibal)
+
+        if can_move:
+            node = Node(game)
+            child_list.append(node)
+
+        return child_list
+
+
+class Search:
+    def __init__(self, root: Node = Node(state=Game())):
+        self.root = root
+        self.finished = False
+        self.searchedNodes = []
+
+    def start_search(self):
+        queue = []
+        queue.append(self.root)
+        # initial_node = self.root
+        # children = initial_node.get_all_children()
+        # for child in children:
+        #     child.parent.append(initial_node)
+        #     initial_node.add_child(child)
+
+        # self.searchedNodes.append(initial_node)
+
+        # queue.append(children)
+
+        while queue:
+            current_node = queue.pop(0)
+
+            if current_node in self.searchedNodes:
+                continue
+
+            self.searchedNodes.append(current_node)
+
+            if current_node.data.gameStatus == GameState.Won:
+                continue
+
+            if current_node.data.gameStatus == GameState.Running:
+                children = current_node.get_all_children()
+                for child in children:
+                    if child not in current_node.parent:
+                        child.parent.append(current_node)
+                        current_node.add_child(child)
+                        if child not in self.searchedNodes:
+                            queue.append(child)
+
+    def start_single_search(self):
+        queue = []
+        queue.append(self.root)
+
+        while queue:
+            current_node = queue.pop(0)
+            if current_node in self.searchedNodes:
+                current_node.terminated = True
+                continue
+
+            self.searchedNodes.append(current_node)
+
+            if current_node.data.gameStatus == GameState.Won:
+                break
+
+            if current_node.data.gameStatus == GameState.Running:
+                children = current_node.get_all_children()
+                for child in children:
+                    if child not in self.searchedNodes:
+                        child.parent.append(current_node)
+                        current_node.add_child(child)
+                        queue.append(child)

@@ -1,11 +1,11 @@
 import graphviz
 from gvanim import Animation, render, gif
-from searching import Node, Search
+from search import Node, Search
 from game import Game, GameState
 
 graph = graphviz.Digraph(comment="The Table")
-graph.attr(layout = 'dot')
-graph.attr(dpi = '500')
+graph.attr(layout="dot")
+graph.attr(dpi="500")
 
 searching = Search()
 print(searching.start_single_search())
@@ -16,7 +16,7 @@ childrenList = []
 parent = []
 while nodeList:
     node = nodeList.pop(0)
-    
+
     color = "lightblue"
 
     if node.data.gameStatus == GameState.Failed:
@@ -29,7 +29,9 @@ while nodeList:
         for parentNode in node.parent:
             print(f"Node: {node.data} Parent: {parentNode.data}")
 
-            graph.edge(str(parentNode.data), str(node.data), label=str(node.data.movePerformed))
+            graph.edge(
+                str(parentNode.data), str(node.data), label=str(node.data.movePerformed)
+            )
 
     childrenList.extend(node.children)
 
@@ -38,15 +40,6 @@ while nodeList:
             nodeList = childrenList
             childrenList = []
 
-            
+
 source = graph
-source.render('Missionary Cannibal', format='jpg',view=True)
-
-
-
-
-
-
-
-
-
+source.render("Missionary Cannibal", format="jpg", view=True)
