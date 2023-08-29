@@ -1,6 +1,6 @@
 import graphviz
 from gvanim import Animation, render, gif
-from search import Node, Search
+from space_search import Node, Search
 from game import Game, GameState
 
 graph = graphviz.Digraph(comment="The Table")

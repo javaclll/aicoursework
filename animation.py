@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from gvanim import Animation, render, gif
-from search import Node, Search
+from space_search import Node, Search
 from game import GameState
 from random import sample
 
