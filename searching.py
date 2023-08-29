@@ -79,18 +79,20 @@ class Search:
 
     def start_search(self):
         queue = []
-        initial_node = self.root
-        children = initial_node.get_all_children()
-        for child in children:
-            child.parent.append(initial_node)
-            initial_node.add_child(child)
+        queue.append(self.root)
+        # initial_node = self.root
+        # children = initial_node.get_all_children()
+        # for child in children:
+        #     child.parent.append(initial_node)
+        #     initial_node.add_child(child)
         
-        self.searchedNodes.append(initial_node)
+        # self.searchedNodes.append(initial_node)
 
-        queue.extend(children)
+        # queue.append(children) 
 
         while queue:
             current_node = queue.pop(0)
+            
             if current_node in self.searchedNodes:
                 continue
         
@@ -110,16 +112,7 @@ class Search:
 
     def start_single_search(self):
         queue = []
-        initial_node = self.root
-        children = initial_node.get_all_children()
-        for child in children:
-            if child not in self.searchedNodes:
-                child.parent.append(initial_node)
-                initial_node.add_child(child)
-        
-        self.searchedNodes.append(initial_node)
-
-        queue.extend(children)
+        queue.append(self.root)
 
         while queue:
             current_node = queue.pop(0)
@@ -130,9 +123,6 @@ class Search:
             self.searchedNodes.append(current_node)
 
             if current_node.data.gameStatus == GameState.Won:
-                current_node.terminated = True
-                current_node.goal = True
-                return current_node
                 break
 
             if current_node.data.gameStatus == GameState.Running:
@@ -142,3 +132,4 @@ class Search:
                         child.parent.append(current_node)
                         current_node.add_child(child)
                         queue.append(child)
+                
