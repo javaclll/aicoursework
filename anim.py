@@ -28,7 +28,7 @@ if __name__=="__main__":
             for parentNode in node.parent:
                 print(f"Node: {node.data} Parent: {parentNode.data}")
 
-        #         graph.edge(str(parentNode.data), str(node.data), label=str(node.data.movePerformed))
+                # graph.edge(str(parentNode.data), str(node.data), label= f" {str(node.data.movePerformed)}" )
         if datapoints.get(str(node.data)):
             datapoints[str(node.data)].extend(node.children) 
         else:
@@ -66,8 +66,7 @@ if __name__=="__main__":
                 color = "lightgreen"
 
             graphAnimation.add_node(str(uertex.data), color=color)
-            graphAnimation.next_step()
-            graphAnimation.add_edge(vertex, str(uertex.data))
+            graphAnimation.add_edge(vertex, str(uertex.data), label = f" {str(uertex.data.movePerformed)}")
             graphAnimation.next_step()   
 
     # seen = [ False for _ in  enumerate(datapoints)]
@@ -88,9 +87,9 @@ if __name__=="__main__":
     # dfv(str(searching.root.data))
 
     graphs = graphAnimation.graphs()
-    files = render( graphs, 'dfv', 'png', 1500)
+    files = render( graphs, 'M and C', 'png', 1500)
     print(files)
-    gif( files, 'dfv', 30, 1500)
+    gif( files, 'M and C', 30, 1500)
 
 
 
