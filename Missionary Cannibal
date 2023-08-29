@@ -1,4 +1,4 @@
-// Missionary and Cannibal
+// The Table
 digraph {
 	layout=dot
 	dpi=500

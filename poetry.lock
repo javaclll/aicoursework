@@ -17,14 +17,19 @@ docs = ["sphinx (>=5)", "sphinx-autodoc-typehints", "sphinx-rtd-theme"]
 test = ["coverage", "mock (>=4)", "pytest (>=7)", "pytest-cov", "pytest-mock (>=3)"]
 
 [[package]]
-name = "graphvizanim"
+name = "GraphvizAnim"
 version = "1.1.0"
 description = "A tool to create animated graph visualizations, based on graphviz"
 optional = false
 python-versions = "*"
-files = [
-    {file = "GraphvizAnim-1.1.0-py3-none-any.whl", hash = "sha256:5200ee68bd3f53d81ee6c157e43eb9d0862c229b539f6b8b212a20124083c183"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/javaclll/GraphvizAnim.git"
+reference = "HEAD"
+resolved_reference = "4bb486c84eb1aa9f550b7a1d1f76f580ef5e4f05"
 
 [[package]]
 name = "pydot"
@@ -57,4 +62,4 @@ diagrams = ["jinja2", "railroad-diagrams"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3f82fb6dbacfc98bab90da2a10d994fbfa28bcf02020536652a08941ee021b53"
+content-hash = "725dd772c1c1f436abd48b81297c851df6e99f308eb515197597d185fc7251ea"

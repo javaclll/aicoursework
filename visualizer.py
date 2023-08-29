@@ -1,5 +1,4 @@
 import graphviz
-from gvanim import Animation, render, gif
 from space_search import Node, Search
 from game import Game, GameState
 
