@@ -15,15 +15,15 @@ class Action:
 
     def __str__(self):
         if self == ActionSpace.Cannibal:
-            return "Cannibal"
+            return "(0,1)"
         elif self == ActionSpace.Missionary:
-            return "Missionary"
+            return "(1,0)"
         elif self == ActionSpace.MissionaryCannibal:
-            return "MissionaryCannibal"
+            return "(1,1)"
         elif self == ActionSpace.TwoMissionaries:
-            return "TwoMissionaries"
+            return "(2,0)"
         elif self == ActionSpace.TwoCannibals:
-            return "TwoCannibals"
+            return "(0,2)"
         else:
             return "Unknown Action"
 
@@ -122,7 +122,7 @@ class Game:
     #     return f"Missionaries: {self.gameState.missionaries}, Cannibals: {self.gameState.cannibals}, Cannoe: {self.gameState.cannoe}, Game check: {self.gameStatus}"
 
     def __str__(self):
-        return f"[{self.gameState.missionaries},{self.gameState.cannibals},{self.gameState.cannoe}] Game check: {self.gameStatus} Move: {self.movePerformed}"
+        return f"({self.gameState.missionaries}, {self.gameState.cannibals}, { 0 if(self.gameState.cannoe) else 1})"
 
 
 if __name__ == "__main__":
