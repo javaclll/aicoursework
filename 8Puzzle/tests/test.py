@@ -3,7 +3,7 @@ import unittest
 
 sys.path.append("../")
 from game import State, Action, ActionSpace, Game
-from space_search import Node, Search
+from space_search import Node, Search, Heuristics
 
 
 class TestSearch(unittest.TestCase):
@@ -11,19 +11,26 @@ class TestSearch(unittest.TestCase):
         searching = Search(
             Node(
                 Game(
-                    State([2, 4, 6, 7, 3, 1, " ", 5, 8]),
+                    State([1, " ", 2, 3, 4, 5, 6, 7, 8]),
                     State([1, 2, 3, 4, 5, 6, 7, 8, " "]),
                 )
             )
         )
-        temp = searching.start_single_search_bfs()
+       
+        depth = 2
+        # temp = searching.start_search_idfs(depth)
+        # temp = searching.start_search_misplaced()
+        temp = searching.start_search_manhatten()
+        if(temp is None):
+            print(f"Cannot find the end state within {depth} depth.")
+        else:
+            while len(temp.parent) != 0:
+                print(temp)
+                temp = temp.parent[0]
 
-        while len(temp.parent) != 0:
-            print(temp)
-            temp = temp.parent[0]
-
-        print(searching.root)
-        self.assertEqual(searching.finished, True)
+            print(f"root: {searching.root}")
+            print(searching.finished)
+            self.assertEqual(searching.finished, True)
 
 
 if __name__ == "__main__":
