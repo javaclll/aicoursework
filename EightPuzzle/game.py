@@ -37,7 +37,10 @@ class State:
     def __str__(self):
         temp = ""
         for i in range(0, len(self.numList)):
-            temp += str(self.numList[i])
+            if(self.numList[i] == " "):
+                temp += str("-")
+            else:
+                temp += str(self.numList[i])
             if (i + 1) % 3 == 0:
                 temp += "\n"
         return temp
