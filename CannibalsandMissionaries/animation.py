@@ -16,32 +16,14 @@ if __name__ == "__main__":
         else:
             datapoints[str(node.data)] = node.children
 
-    # nodeList = [searching.root]
-    # childrenList = []
-    # parent = []
-    # while nodeList:
-    #     node = nodeList.pop(0)
-
-    #     if datapoints.get(str(node.data)):
-    #         datapoints[str(node.data)].extend(node.children)
-    #     else:
-    #         datapoints[str(node.data)] = node.children
-
-    #     childrenList.extend(node.children)
-
-    #     if len(nodeList) == 0:
-    #         if len(childrenList) != 0:
-    #             nodeList = childrenList
-    #             childrenList = []
-
     graphAnimation = Animation()
 
-    print(len(datapoints))
     graphAnimation.add_node(str(searching.root.data))
     graphAnimation.next_step()
 
     for vertex, adjacents in datapoints.items():
         for uertex in adjacents:
+            print(vertex, uertex.data)
             color = "cyan"
 
             if uertex.data.gameStatus == GameState.Failed:
@@ -60,3 +42,6 @@ if __name__ == "__main__":
     files = render(graphs, "./animationimages/M and C", "png", 1500)
     print(files)
     gif(files, "M and C", 30, 1500)
+
+
+# Check Animate to arrange the animation in order
