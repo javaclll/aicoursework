@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
 import sys
 
-sys.path.append('/Users/yugeshluitel/Documents/State-Space-Visualizer/')
 import EightPuzzle
+import CannibalsandMissionaries
 
 app = FastAPI()
 
@@ -15,6 +15,27 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/cnm/bfs")
+def cnmbfs():
+    searching = CannibalsandMissionaries.Search()
+    temp = searching.start_single_search_bfs()
+
+    # for t in temp:
+    #     while len(t.parent) != 0:
+    #         print(t)
+    #         t = t.parent[0]
+    #     print("\n")
+
+    return{"Searching Status": searching.finished, "Found": str(temp), "Data": searching.graphvizzes}
+
+@app.get("/cnm/dfs")
+def cnmdfs():
+    searching = CannibalsandMissionaries.Search()
+    temp = searching.start_single_search_dfs()
+
+    return{"Searching Status": searching.finished, "Found": str(temp), "Data": searching.graphvizzes}
+     
 
 @app.get("/eightpuzzle/bfs")
 def bfs():

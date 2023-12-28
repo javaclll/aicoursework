@@ -1,9 +1,8 @@
 import sys
 import unittest
 
-sys.path.append("../")
-from game import State, Action, ActionSpace, Game
-from space_search import Node, Search
+from CannibalsandMissionaries.game import State, Action, ActionSpace, Game
+from CannibalsandMissionaries.space_search import Node, Search
 
 
 class TestGame(unittest.TestCase):
