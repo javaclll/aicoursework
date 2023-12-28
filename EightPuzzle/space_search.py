@@ -70,13 +70,13 @@ class Node:
         child_list = []
 
         game = copy.deepcopy(self.data)
-        can_move = game.move(ActionSpace.MoveLeft)
+        can_move = game.move(ActionSpace.MoveRight)
         if can_move:
             node = Node(game)
             child_list.append(node)
 
         game = copy.deepcopy(self.data)
-        can_move = game.move(ActionSpace.MoveUp)
+        can_move = game.move(ActionSpace.MoveLeft)
         if can_move:
             node = Node(game)
             child_list.append(node)
@@ -88,12 +88,13 @@ class Node:
             child_list.append(node)
 
         game = copy.deepcopy(self.data)
-        can_move = game.move(ActionSpace.MoveRight)
+        can_move = game.move(ActionSpace.MoveUp)
         if can_move:
             node = Node(game)
             child_list.append(node)
 
         
+
         return child_list
 
 
@@ -129,32 +130,33 @@ class Search:
                             queue.append(child)
 
     def start_single_search_bfs(self):
+        generatedNodes = set()
+        generatedNodes.add(str(self.root.data.gameState.numList))
         queue = []
         queue.append(self.root)
+        self.graphvizzes.append(f'"{str(self.root.data.gameState)}" [style=filled, color=lightblue]}}')
+
         count = 0
         while queue:
             current_node = queue.pop(0)
-            print(count)
             if current_node in self.searchedNodes:
-                current_node.terminated = True
                 continue
+
             count += 1
             self.searchedNodes.append(current_node)
-
-            if current_node.data.gameStatus == GameState.Won:
-                self.finished = True
-                return current_node
 
             if current_node.data.gameStatus == GameState.Running:
                 children = current_node.get_all_children()
                 for child in children:
-                    if child not in self.searchedNodes:
-                        self.graphvizzes.append(f'"{str(current_node.data.gameState)}" -> "{str(child.data.gameState)}" [label="{child.data.movePerformed}"]}} ')
-                        child.parent.append(current_node)
-                        current_node.add_child(child)
+                    if str(child.data.gameState.numList) not in generatedNodes:
+                        generatedNodes.add(str(child.data.gameState.numList))
+                        self.graphvizzes.append(f'"{str(current_node.data.gameState)}" -> "{str(child.data.gameState)}" [label="{child.data.movePerformed}"]}}')
+                       
                         queue.append(child)
                         if child.data.gameStatus == GameState.Won:
+                            self.graphvizzes.append(f'"{str(child.data.gameState)}" [style=filled, color=lightgreen]}}')
                             self.finished = True
+                            print(f"Total No of States: {count}")
                             return child
                         
                         
@@ -162,7 +164,7 @@ class Search:
     def start_search_dfs(self):
         stack = []
         stack.append(self.root)
-
+        
         while stack:
             current_node = stack.pop(0)
             if current_node in self.searchedNodes:
@@ -186,41 +188,66 @@ class Search:
                 stack = [*temp, *stack]
 
     def start_single_search_dfs(self):
+        print('DFS ...')
+        generatedNodes = set()
+        generatedNodes.add(str(self.root.data.gameState.numList))
         stack = []
-        stack.append(self.root)
+        stack.append({"node": self.root, "depth": 0})
+        self.graphvizzes.append(f'"{str(self.root.data.gameState)}" [style=filled, color=lightblue]}}')
 
+        count = 0
         while stack:
             current_node = stack.pop(0)
+            # current_depth = current_node["depth"]
+            current_node = current_node["node"]
             if current_node in self.searchedNodes:
-                current_node.terminated = True
                 continue
-
+            
+            count += 1
             self.searchedNodes.append(current_node)
 
-            if current_node.data.gameStatus == GameState.Won:
-                self.finished = True
-                return current_node
+            # if current_node.data.gameStatus == GameState.Won:
+            #     self.finished = True
+            #     print(f"Total No of States: {count}")
+            #     return current_node
+            if (count % 100 == 0):
+                print(f"No of States Generated: {count}")
 
+            # if current_node.data.gameStatus == GameState.Running and current_depth <= 3:
             if current_node.data.gameStatus == GameState.Running:
                 children = current_node.get_all_children()
                 temp = []
                 for child in children:
-                    if child not in self.searchedNodes:
-                        child.parent.append(current_node)
-                        current_node.add_child(child)
-                        temp.append(child)
-
+                    if str(child.data.gameState.numList) not in generatedNodes:
+                        generatedNodes.add(str(child.data.gameState.numList))
+                        self.graphvizzes.append(f'"{str(current_node.data.gameState)}" -> "{str(child.data.gameState)}" [label="{child.data.movePerformed}"]}}')
+                        
+                        # temp.append({"node" :child, "depth": current_depth + 1})
+                        temp.append({"node" :child, "depth": 1})
+                        if child.data.gameStatus == GameState.Won:
+                            self.graphvizzes.append(f'"{str(child.data.gameState)}" [style=filled, color=lightgreen]}}')
+                            self.finished = True
+                            print(f"Total No of States: {count}")
+                            return child
+                        
                 stack = [*temp, *stack]
 
     def start_search_idfs(self, max_depth):
         for depth in range(max_depth + 1):
-            result = self.depth_limited_search(self.root, depth)
+            generatedNodes = set()
+            generatedNodes.add(str(self.root.data.gameState.numList))
+
+            # if depth == 0:
+            self.graphvizzes.append(f' "depth : {depth}\n{str(self.root.data.gameState)}" [style=filled, color=lightblue]}} ')
+
+            result = self.depth_limited_search(self.root, depth, generatedNodes, depth)
             if result is not None:
                 return result
     
-    def depth_limited_search(self, node, depth):
+    def depth_limited_search(self, node, depth, generatedNodes, current_depth):
         if depth == 0:
             if node.data.gameStatus == GameState.Won:
+                self.graphvizzes.append(f'"depth : {current_depth}\n{str(node.data.gameState)}" [style=filled, color=lightgreen]}}')
                 self.finished = True
                 return node
             return None
@@ -233,10 +260,12 @@ class Search:
         if node.data.gameStatus == GameState.Running:
             children = node.get_all_children()
             for child in children:
-                if child not in self.searchedNodes:
+                if str(child.data.gameState.numList) not in generatedNodes:
+                    generatedNodes.add(str(child.data.gameState.numList))
+                    self.graphvizzes.append(f'"depth : {current_depth}\n{str(node.data.gameState)}" -> "depth : {current_depth}\n{str(child.data.gameState)}" [label="{child.data.movePerformed}"]}}')
                     child.parent.append(node)
                     node.add_child(child)
-                    result = self.depth_limited_search(child, depth=depth - 1)
+                    result = self.depth_limited_search(child, depth=depth - 1, generatedNodes=generatedNodes, current_depth=current_depth)
                     if result is not None:
                         return result        
 
@@ -245,6 +274,9 @@ class Search:
         self.root.f_value = Heuristics.manhatten_distance(self.root)
         list = []
         list.append(self.root)
+        generatedNodes = set()
+        generatedNodes.add(str(self.root.data.gameState.numList))
+        self.graphvizzes.append(f'"{str(self.root.data.gameState)} \t f : {self.root.f_value}" [style=filled, color=lightblue]}}')
 
         node_count = 0
         while list:
@@ -264,19 +296,31 @@ class Search:
             if current_node.data.gameStatus == GameState.Running:
                 children = current_node.get_all_children()
                 for child in children:
-                    if child not in self.searchedNodes:
+                    if str(child.data.gameState.numList) not in generatedNodes:
                         child.parent.append(current_node)
                         current_node.add_child(child)
                         child.g_value = current_node.g_value + 1
                         child.f_value = Heuristics.manhatten_distance(child) + child.g_value
+                        generatedNodes.add(str(child.data.gameState.numList))
+                        if not self.finished:
+                            self.graphvizzes.append(f'"{str(current_node.data.gameState)} \t f : {current_node.f_value}" -> "{str(child.data.gameState)} \t f : {child.f_value}" [label="{child.data.movePerformed}"]}}')
+
+                        if child.data.gameStatus == GameState.Won:
+                            self.graphvizzes.append(f'"{str(child.data.gameState)} \t f : {child.f_value}" [style=filled, color=lightgreen]}}')
+                            self.finished = True
                         bisect.insort(list, child, key= lambda x: x.f_value)
         
         
     def start_search_misplaced(self):
+        print("Heuristic Misplaced Search ...")
         self.root.g_value = 0
         self.root.f_value = Heuristics.no_of_misplaced_tiles(self.root)
         list = []
         list.append(self.root)
+        generatedNodes = set()
+        generatedNodes.add(str(self.root.data.gameState.numList))
+        self.graphvizzes.append(f'"{str(self.root.data.gameState)} \t f : {self.root.f_value}" [style=filled, color=lightblue]}}')
+
         node_count = 0
         while list:
             node_count += 1
@@ -295,10 +339,20 @@ class Search:
             if current_node.data.gameStatus == GameState.Running:
                 children = current_node.get_all_children()
                 for child in children:
-                    if child not in self.searchedNodes:
+                    if str(child.data.gameState.numList) not in generatedNodes:
                         child.parent.append(current_node)
                         current_node.add_child(child)
                         child.g_value = current_node.g_value + 1
                         child.f_value = Heuristics.no_of_misplaced_tiles(child) + child.g_value
+                        generatedNodes.add(str(child.data.gameState.numList))
+                        if not self.finished:
+                            self.graphvizzes.append(f'"{str(current_node.data.gameState)} \t f : {current_node.f_value}" -> "{str(child.data.gameState)} \t f : {child.f_value}" [label="{child.data.movePerformed}"]}}')
+
+                        if child.data.gameStatus == GameState.Won:
+                            self.graphvizzes.append(f'"{str(child.data.gameState)} \t f : {child.f_value}" [style=filled, color=lightgreen]}}')
+
+                            self.finished = True
+                        
+                       
                         bisect.insort(list, child, key= lambda x: x.f_value)
 
