@@ -3,33 +3,21 @@ import unittest
 
 sys.path.append("../")
 from game import State, Action, ActionSpace, Game
+from space_search import Node, Search
 
 
 class TestGame(unittest.TestCase):
     def testIntegratedGame(self):
-        newGame = Game()
-        actions = [
-            ActionSpace.TwoCannibals,
-            ActionSpace.Cannibal,
-            ActionSpace.TwoCannibals,
-            ActionSpace.Cannibal,
-            ActionSpace.TwoMissionaries,
-            ActionSpace.MissionaryCannibal,
-            ActionSpace.TwoMissionaries,
-            ActionSpace.Cannibal,
-            ActionSpace.TwoCannibals,
-            ActionSpace.Cannibal,
-            ActionSpace.TwoCannibals,
-        ]
-        for action in actions:
-            newGame.move(action)
+        searching = Search()
+        temp = searching.start_search_dfs()
 
-        goalState = State(0, 0, False)
+        for t in temp:
+            while len(t.parent) != 0:
+                print(t)
+                t = t.parent[0]
+            print("\n")
 
-        result = newGame.gameState
-        self.assertEqual(result.missionaries, goalState.missionaries)
-        self.assertEqual(result.cannibals, goalState.cannibals)
-        self.assertEqual(result.cannoe, goalState.cannoe)
+        self.assertEqual(searching.finished, True)
 
 
 if __name__ == "__main__":

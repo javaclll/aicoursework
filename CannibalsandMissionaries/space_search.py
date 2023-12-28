@@ -24,7 +24,7 @@ class Node:
         return False
 
     def __str__(self):
-        return f"Node: {self.data}, Goal: {self.goal}, Terminated: {self.terminated}"
+        return f"Node: {self.data}, Goal: {self.goal}, Terminated: {self.terminated}, Last Move Performed: {self.data.movePerformed}"
 
     def add_child(self, child_node):
         self.children.append(child_node)
@@ -76,7 +76,7 @@ class Search:
         self.finished = False
         self.searchedNodes = []
 
-    def start_search(self):
+    def start_search_bfs(self):
         queue = []
         queue.append(self.root)
         # initial_node = self.root
@@ -88,7 +88,7 @@ class Search:
         # self.searchedNodes.append(initial_node)
 
         # queue.append(children)
-
+        answers = []
         while queue:
             current_node = queue.pop(0)
 
@@ -98,6 +98,9 @@ class Search:
             self.searchedNodes.append(current_node)
 
             if current_node.data.gameStatus == GameState.Won:
+                current_node.terminated = True
+                self.finished = True
+                answers.append(current_node)
                 continue
 
             if current_node.data.gameStatus == GameState.Running:
@@ -108,8 +111,14 @@ class Search:
                         current_node.add_child(child)
                         if child not in self.searchedNodes:
                             queue.append(child)
+                            if child.data.gameStatus == GameState.Won:
+                                child.terminated = True
+                                child.goal = True
+                                self.finished = True
+                                answers.append(child)
+        return answers
 
-    def start_single_search(self):
+    def start_single_search_bfs(self):
         queue = []
         queue.append(self.root)
 
@@ -122,7 +131,9 @@ class Search:
             self.searchedNodes.append(current_node)
 
             if current_node.data.gameStatus == GameState.Won:
-                break
+                current_node.root.goal = True
+                self.finished = True
+                return current_node
 
             if current_node.data.gameStatus == GameState.Running:
                 children = current_node.get_all_children()
@@ -131,3 +142,77 @@ class Search:
                         child.parent.append(current_node)
                         current_node.add_child(child)
                         queue.append(child)
+                        if child.data.gameStatus == GameState.Won:
+                            child.goal = True
+                            self.finished = True
+                            return child
+
+    def start_search_dfs(self):
+        stack = []
+        stack.append(self.root)
+
+        answers = []
+
+        while stack:
+            current_node = stack.pop(0)
+            if current_node in self.searchedNodes:
+                current_node.terminated = True
+                continue
+
+            self.searchedNodes.append(current_node)
+
+            if current_node.data.gameStatus == GameState.Won:
+                current_node.terminated = True
+                self.finished = True
+                answers.append(current_node)
+                continue
+
+            if current_node.data.gameStatus == GameState.Running:
+                children = current_node.get_all_children()
+                temp = []
+                for child in children:
+                    if child not in self.searchedNodes:
+                        child.parent.append(current_node)
+                        current_node.add_child(child)
+                        temp.append(child)
+                        if child.data.gameStatus == GameState.Won:
+                            child.goal = True
+                            child.terminated = True
+                            self.finished = True
+                            answers.append(child)
+
+                stack = [*temp, *stack]
+
+        return answers
+
+    def start_single_search_dfs(self):
+        stack = []
+        stack.append(self.root)
+
+        while stack:
+            current_node = stack.pop(0)
+            if current_node in self.searchedNodes:
+                current_node.terminated = True
+                continue
+
+            self.searchedNodes.append(current_node)
+
+            if current_node.data.gameStatus == GameState.Won:
+                current_node.root.goal = True
+                self.finished = True
+                return current_node
+
+            if current_node.data.gameStatus == GameState.Running:
+                children = current_node.get_all_children()
+                temp = []
+                for child in children:
+                    if child not in self.searchedNodes:
+                        child.parent.append(current_node)
+                        current_node.add_child(child)
+                        temp.append(child)
+                        if child.data.gameStatus == GameState.Won:
+                            child.goal = True
+                            self.finished = True
+                            return child
+
+                stack = [*temp, *stack]

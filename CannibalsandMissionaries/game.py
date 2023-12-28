@@ -121,4 +121,4 @@ class Game:
     #     return f"Missionaries: {self.gameState.missionaries}, Cannibals: {self.gameState.cannibals}, Cannoe: {self.gameState.cannoe}, Game check: {self.gameStatus}"
 
     def __str__(self):
-        return f"({self.gameState.missionaries}, {self.gameState.cannibals}, { 0 if(self.gameState.cannoe) else 1})"
+        return f"({self.gameState.missionaries}, {self.gameState.cannibals}, {self.gameState.cannoe})"
