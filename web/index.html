@@ -1,21 +1,18 @@
 <!doctype html>
 <meta charset="utf-8" />
 <body>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+  <script src="./node_modules/axios/dist/axios.min.js"></script>
   <script src="./scripts/d3.min.js"></script>
   <script src="./scripts/graphviz.umd.js"></script>
   <script src="./scripts/d3-graphviz.min.js"></script>
-  <!-- <script src="./scripts/myscript.js" type="module"></script> -->
   <div id="graph" style="text-align: center"></div>
   <script>
-    const getData = () => {
+    const getData = (endpoint) => {
       axios
-        .get("http://127.0.0.1:8000/eightpuzzle/bfs")
+        .get(endpoint)
         .then((response) => {
           var dotData = response.data["Data"];
  
-          console.log(`GET data`, dotData);
-
           var dotIndex = 0;
           var graphviz = d3
           .select("#graph")
@@ -23,14 +20,13 @@
           .transition(function () {
             return d3.transition().ease(d3.easeLinear).delay(100).duration(150);
           })
-          // .logEvents(true)
           .on("initEnd", render);
 
           function attributer(datum, index, nodes) {
             var selection = d3.select(this);
             if (datum.tag == "svg") {
-              var width = "1920";
-              var height = "1080";
+              var width = "2664";
+              var height = "1696";
               var x = "20";
               var y = "20";
               selection
@@ -44,19 +40,14 @@
           }
 
           function render() {
-            console.log(dotIndex);
-            console.log(dotData.length -1);
             if (dotIndex >= dotData.length - 1) {
               return;
             }
-            var dotLines = dotData[0] ;
-            console.log(`Initialized : ${dotLines}`);
+            var dotLines = dotData[0] + ' node [color=purple]; ';
             for (let index = 0; index <= dotIndex; index++) {
               dotLines = dotLines + '{' + dotData[((index) % (dotData.length - 1)) + 1];
-              console.log(`Index : ${index} DotLines: ${dotLines}`);
             }
             dotLines += '}'
-            console.log(dotLines);
             graphviz
               .tweenShapes(false)
               .dot(dotLines)
@@ -68,67 +59,25 @@
                 }
               });
             dotIndex += 1;
-            // dotIndex = (dotIndex + 1) % dots.length;
           }
             
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error(error);
+        });
     };
-    getData();
-//     var dotIndex = 0;
-// var graphviz = d3.select("#graph").graphviz()
-//     .attributer(function(d) {
-//         if (d.tag == "ellipse") {
-//             d3.select(this)
-//                 .attr("fill", "yellow");
-//             d.attributes.fill = "red";
-//         }
-//     })
-//     .transition(function () {
-//         return d3.transition()
-//             .ease(d3.easeLinear)
-//             .delay(100)
-//             .duration(2000);
-//     })
-//     .logEvents(true)
-//     .on("initEnd", render);
 
-
-// function render() {
-    // var dotLines = dots[dotIndex];
-    // var dot = dotLines.join('');
-    // console.log(dot);
-    // graphviz
-    //     .dot(dot)
-    //     .render()
-    //     .on('end', function () {
-    //         // render();
-    //     });
-    // dotIndex = (dotIndex + 1) % dots.length;
-
-// }
-  var dots = [
-    [
-        'digraph  {',
-        '  {"1234567 8" -> "12345678 " [label="Right"]}',
-        '}'
-    ],
-    [
-        'digraph  {',
-        '    {"1234567 8" -> "12345678 " [label="Right"]}',
-        '    {"1234567 8" -> "12 45678 " [label="Left"]}',
-        '}'
-    ],
-    [
-        'digraph  {',
-        '    {"1234567 8" -> "12345678 " [label="Right"]}',
-        '    {"1234567 8" -> "12 45678 " [label="Left"]}',
-        '    {"12 45678 " -> "12345678 " [label="Up"]}',
-        '}'
-    ],
-    
-    
-];
-
+    // Select One of the Following:
+    //
+    //  for bfs :
+      //  getData("http://127.0.0.1:8000/eightpuzzle/bfs"); 
+    //  for dfs :
+      //  getData("http://127.0.0.1:8000/eightpuzzle/dfs");
+    //  for idfs :
+      //  getData(`http://127.0.0.1:8000/eightpuzzle/idfs/${5}`);
+    //  for manhatten heuristics :
+      //  getData("http://127.0.0.1:8000/eightpuzzle/heuristics/manhatten");
+    //  for misplaced heuristics :
+      //  getData("http://127.0.0.1:8000/eightpuzzle/heuristics/misplaced");
   </script>
 </body>
