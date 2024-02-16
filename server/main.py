@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
 import sys
 
+from fastapi.responses import FileResponse
+
 import EightPuzzle
 import CannibalsandMissionaries
 
@@ -15,6 +17,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def get_index():
+    return FileResponse("../web/index.html")
 
 @app.get("/cnm/bfs")
 def cnmbfs():

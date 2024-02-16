@@ -5,9 +5,37 @@
   <script src="./scripts/d3.min.js"></script>
   <script src="./scripts/graphviz.umd.js"></script>
   <script src="./scripts/d3-graphviz.min.js"></script>
+  <h1 id="idname">No Server</h1>
   <div id="graph" style="text-align: center"></div>
   <script>
-    const getData = (endpoint) => {
+    const getData = (endpoint, statewhich) => {
+
+      switch (statewhich) {
+        case 1:
+          document.getElementById("idname").textContent = " Eight Puzzle BFS ";
+          break;
+        case 2:
+          document.getElementById("idname").textContent = " Eight Puzzle DFS ";
+          break;
+        case 3:
+          document.getElementById("idname").textContent = " Eight Puzzle IDS ";
+          break;
+        case 4:
+          document.getElementById("idname").textContent = " Eight Puzzle Manhatten ";
+          break;
+        case 5:
+          document.getElementById("idname").textContent = "Eight Puzzle Misplaced Tiles ";
+          break;
+        case 6:
+          document.getElementById("idname").textContent = "Missionaries and Cannibales BFS ";
+          break;
+        case 7:
+          document.getElementById("idname").textContent = "Missionaries and Cannibales DFS ";
+          break;
+        default:
+          document.getElementById("idname").textContent = "  ";
+          break;
+      }
       axios
         .get(endpoint)
         .then((response) => {
@@ -70,18 +98,18 @@
     // Select One of the Following:
     //
     //  for bfs :
-      //  getData("http://127.0.0.1:8000/eightpuzzle/bfs"); 
+       getData("http://127.0.0.1:8000/eightpuzzle/bfs", 1); 
     //  for dfs :
-      //  getData("http://127.0.0.1:8000/eightpuzzle/dfs");
+      //  getData("http://127.0.0.1:8000/eightpuzzle/dfs", 2);
     //  for idfs :
-      //  getData(`http://127.0.0.1:8000/eightpuzzle/idfs/${5}`);
+      //  getData(`http://127.0.0.1:8000/eightpuzzle/idfs/${5}`, 3);
     //  for manhatten heuristics :
-      //  getData("http://127.0.0.1:8000/eightpuzzle/heuristics/manhatten");
+      //  getData("http://127.0.0.1:8000/eightpuzzle/heuristics/manhatten", 4);
     //  for misplaced heuristics :
-      //  getData("http://127.0.0.1:8000/eightpuzzle/heuristics/misplaced");
+      //  getData("http://127.0.0.1:8000/eightpuzzle/heuristics/misplaced", 5);
     //  for bfs cnm:
-      //  getData("http://127.0.0.1:8000/cnm/bfs");
+      //  getData("http://127.0.0.1:8000/cnm/bfs", 6);
     // for dfs cnm:  
-      //  getData("http://127.0.0.1:8000/cnm/dfs");
+      //  getData("http://127.0.0.1:8000/cnm/dfs", 7);
   </script>
 </body>
